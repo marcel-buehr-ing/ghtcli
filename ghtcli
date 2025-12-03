@@ -390,7 +390,7 @@ _ghlr_glab()
   case ${1} in
     install)
       local asset_ext=tar.gz
-      local asset_rel="$(curl ${AUTH_HEADER:+-H "${AUTH_HEADER}"} -s https://api.github.com/repos/gl-cli/glab/tags |jq -r '.[0].name')"
+      local asset_rel="$(curl ${AUTH_HEADER:+-H "${AUTH_HEADER}"} -fsSL https://api.github.com/repos/gl-cli/glab/tags |jq -r '.[0].name')"
       local asset_dwl='https://gitlab.com/gitlab-org/cli/-/releases/${asset_rel}/downloads/${asset}_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
       local asset_tar=bin/glab
       _latest_release_asset
