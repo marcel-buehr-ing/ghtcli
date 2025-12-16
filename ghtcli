@@ -1092,6 +1092,26 @@ _ghlr_skopeo()
   esac
 }
 
+# sops
+_ghlr_sops()
+{
+  local repo=sops owner=getsops asset=sops
+  case ${1} in
+    install)
+      local asset_url='${asset}-${asset_rel}.${KERNEL}.${ARCH}'
+      _latest_release_asset
+      ;;
+    postinstall)
+      sops completion bash >"${BCD_PATH}"/sops
+      sops completion zsh >"${ZCD_PATH}"/_sops
+      ;;
+    remove) _remove_asset ;;
+    clean) _clean_asset ;;
+    info) _get_asset_info ;;
+    *) false ;;
+  esac
+}
+
 # stern
 _ghlr_stern()
 {
