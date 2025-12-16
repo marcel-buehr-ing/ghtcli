@@ -148,6 +148,38 @@ _ghlr_ghtcli()
   esac
 }
 
+# age-encryption
+_ghlr_age()
+{
+  local repo=age owner=FiloSottile asset=age
+  case ${1} in
+    install)
+      local ARCH=${ARCH/armv*/arm}
+      local asset_ext=tar.gz
+      local asset_url='age-${asset_rel}-${KERNEL}-${ARCH}.${asset_ext#.}'
+      local asset_out='age-${asset_rel}-${KERNEL}-${ARCH}'
+      local asset_tar=age/age
+      _latest_release_asset
+      local asset=age-keygen
+      local asset_tar=age/age-keygen
+      _latest_release_asset
+      ;;
+    postinstall)
+      true
+      #age completion bash >"${BCD_PATH}"/age
+      #age completion zsh >"${ZCD_PATH}"/_age
+      #age completion fsh >"${FCD_PATH}"/age.fish
+      ;;
+    remove)
+      _remove_asset
+      rm -vf "${BIN_PATH}"/age-keygen
+      ;;
+    clean) _clean_asset ;;
+    info) _get_asset_info ;;
+    *) false ;;
+  esac
+}
+
 # cert-manager-cli
 _ghlr_cmctl()
 {
