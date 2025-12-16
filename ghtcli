@@ -1102,8 +1102,9 @@ _ghlr_sops()
       _latest_release_asset
       ;;
     postinstall)
-      sops completion bash >"${BCD_PATH}"/sops
-      sops completion zsh >"${ZCD_PATH}"/_sops
+      true
+      #sops completion bash >"${BCD_PATH}"/sops
+      #sops completion zsh >"${ZCD_PATH}"/_sops
       ;;
     remove) _remove_asset ;;
     clean) _clean_asset ;;
