@@ -180,6 +180,29 @@ _ghlr_age()
   esac
 }
 
+# carapace
+_ghlr_carapace()
+{
+  local repo=carapace-bin owner=carapace-sh asset=carapace
+  case ${1} in
+    install)
+      local asset_ext=tar.gz
+      local asset_url='${asset}-bin_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
+      local asset_tar=carapace
+      _latest_release_asset
+      ;;
+    postinstall)
+      carapace carapace bash >"${BCD_PATH}"/carapace
+      carapace carapace zsh >"${ZCD_PATH}"/_carapace
+      carapace carapace fish >"${FCD_PATH}"/carapace.fish
+      ;;
+    remove) _remove_asset ;;
+    clean) _clean_asset ;;
+    info) _get_asset_info ;;
+    *) false ;;
+  esac
+}
+
 # cert-manager-cli
 _ghlr_cmctl()
 {
