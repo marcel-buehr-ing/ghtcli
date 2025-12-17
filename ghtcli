@@ -1670,7 +1670,6 @@ _install_asset()
     find . -type f \
            -name "${asset_cpf}" \
          ! -name "${asset_out}*" \
-           -printf "removed '%f'\n" \
            -delete
   fi
 
