@@ -100,6 +100,7 @@ _ghlr_talos=talosctl,ttx,talos_ps1,talhelper,talm,flux
 _ghlr_kubectx=fzf
 _ghlr_kubens=fzf
 _ghlr_regclient=regbot,regctl,regsync
+_ghlr_sops=age
 _ghlr_ttx=fzf,yq
 
 #
@@ -165,14 +166,19 @@ _ghlr_age()
       _latest_release_asset
       ;;
     postinstall)
-      true
-      #age completion bash >"${BCD_PATH}"/age
-      #age completion zsh >"${ZCD_PATH}"/_age
-      #age completion fsh >"${FCD_PATH}"/age.fish
+      carapace age bash >"${BCD_PATH}"/age
+      carapace age zsh >"${ZCD_PATH}"/_age
+      carapace age fish >"${FCD_PATH}"/age.fish
+      #carapace age-keygen bash >"${BCD_PATH}"/age-keygen
+      #carapace age-keygen zsh >"${ZCD_PATH}"/_age-keygen
+      #carapace age-keygen fish >"${FCD_PATH}"/age-keygen.fish
       ;;
     remove)
       _remove_asset
       rm -vf "${BIN_PATH}"/age-keygen
+      rm -vf "${BCD_PATH}"/age-keygen
+      rm -vf "${ZCD_PATH}"/_age-keygen
+      rm -vf "${FCD_PATH}"/age-keygen.fish
       ;;
     clean) _clean_asset ;;
     info) _get_asset_info ;;
@@ -2016,12 +2022,13 @@ while :; do
       done
       break ;;
     ins*) # install
-      _dependencies jq
+      _dependencies jq,carapace
       for i in $(_resolve ${@:-_all}); do
         _ghlr_${i} install
       done
       break ;;
     pos*|com*) # postinstall (formerly completion)
+      _dependencies jq,carapace
       for i in ${@:-$(_installed list)}; do
         if grep -qxF ${i} .installed; then
           postinstall=called
@@ -2036,6 +2043,7 @@ while :; do
       if _noninteractive; then
         _autoupdate marker
       fi
+      _dependencies jq,carapace
       if _installed list |grep -qxF ghtcli; then
         for i in ghtcli \
           $(_installed list |(grep -vxF ghtcli ||:)); do
