@@ -873,19 +873,23 @@ _ghlr_mintoolkit()
         local asset_ext=zip
       fi
       local asset_url='dist_${KERNEL}${ARCH:+_${ARCH}}.${asset_ext}'
-      local asset_out='mintoolkit-${asset_rel}-${KERNEL}${ARCH:+-${ARCH}}'
+      local asset_out='${asset}-${asset_rel}-${KERNEL}${ARCH:+-${ARCH}}'
       local asset_tar='dist_${KERNEL}${ARCH:+_${ARCH}}/${asset}'
       local asset_zip='dist_${KERNEL}${ARCH:+_${ARCH}}/${asset}'
       _latest_release_asset
       local asset=mint-sensor
       _latest_release_asset
+      rm -vf mintoolkit-*
       ;;
     postinstall) true ;;
     remove)
       _remove_asset
       rm -vf "${BIN_PATH}"/mint-sensor
       ;;
-    clean) _clean_asset ;;
+    clean)
+      _clean_asset
+      rm -vf mintoolkit-*
+      ;;
     info) _get_asset_info ;;
     *) false ;;
   esac
@@ -1666,6 +1670,7 @@ _install_asset()
     find . -type f \
            -name "${asset_cpf}" \
          ! -name "${asset_out}*" \
+           -printf "removed '%f'\n" \
            -delete
   fi
 
