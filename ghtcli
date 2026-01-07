@@ -88,7 +88,7 @@ _ghlr_docker=ctop,lazydocker,dry,docuum
 _ghtlr_git=lazygit
 _ghlr_gitlab=glab
 _ghlr_hashicorp=vault,terraform
-_ghlr_kube=kubectl,kube_ps1,krew,kubectx,kubens,k9s,stern,kustomize,helm,helm_ct
+_ghlr_kube=kubectl,kube_ps1,krew,kubie,kubectx,kubens,k9s,stern,kustomize,helm,helm_ct
 _ghlr_lazy=lazydocker,lazygit
 _ghlr_minio=mc,rclone
 _ghlr_registry=oras,regclient,skopeo
@@ -762,6 +762,27 @@ _ghlr_kubens()
       rm -vf "${ZCD_PATH}"/_kns-kubens
       rm -vf "${FCD_PATH}"/kns-kubens.fish
       ;;
+    clean) _clean_asset ;;
+    info) _get_asset_info ;;
+    *) false ;;
+  esac
+}
+
+# kubie
+_ghlr_kubie()
+{
+  local repo=kubie owner=sbstp asset=kubie
+  case ${1} in
+    install)
+      local ARCH=${ARCH/armv*/arm32}
+      _latest_release_asset
+      ;;
+    postinstall)
+      kubie generate-completion bash >"${BCD_PATH}"/kubie
+      kubie generate-completion zsh >"${ZCD_PATH}"/_kubie
+      kubie generate-completion fish >"${FCD_PATH}"/kubie.fish
+      ;;
+    remove) _remove_asset ;;
     clean) _clean_asset ;;
     info) _get_asset_info ;;
     *) false ;;
