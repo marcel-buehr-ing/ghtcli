@@ -222,7 +222,7 @@ _ghlr_cmctl()
     postinstall)
       cmctl completion bash >"${BCD_PATH}"/cmctl
       cmctl completion zsh >"${ZCD_PATH}"/_cmctl
-      cmctl completion fsh >"${FCD_PATH}"/cmctl.fish
+      cmctl completion fish >"${FCD_PATH}"/cmctl.fish
       ;;
     remove) _remove_asset ;;
     clean) _clean_asset ;;
@@ -538,7 +538,7 @@ _ghlr_helm_ct()
       _latest_release_raw_asset
       ct completion bash >"${BCD_PATH}"/ct
       ct completion zsh >"${ZCD_PATH}"/_ct
-      ct completion fsh >"${FCD_PATH}"/ct.fish
+      ct completion fish >"${FCD_PATH}"/ct.fish
       ;;
     remove)
       _remove_asset
@@ -945,7 +945,7 @@ _ghlr_nerdctl()
     postinstall)
       nerdctl completion bash >"${BCD_PATH}"/nerdctl
       nerdctl completion zsh >"${ZCD_PATH}"/_nerdctl
-      nerdctl completion fsh >"${FCD_PATH}"/nerdctl.fish
+      nerdctl completion fish >"${FCD_PATH}"/nerdctl.fish
       ;;
     remove)
       _remove_asset
