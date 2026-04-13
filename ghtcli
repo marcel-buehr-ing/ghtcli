@@ -1316,8 +1316,10 @@ _ghlr_talosctl()
 _ghlr_taskwarrior_tui()
 {
   local repo=taskwarrior-tui owner=kdheepak asset=taskwarrior-tui
+  local archs_linux=amd64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local KERNEL=${KERNEL/linux/unknown-linux-musl}
       local KERNEL=${KERNEL/darwin/apple-darwin}
       local ARCH=${ARCH/amd64/x86_64}
@@ -1509,6 +1511,7 @@ _clr_red=$'\e[38;2;255;0;0m'
 _clr_blue=$'\e[38;2;0;128;255m'
 _clr_green=$'\e[38;2;0;200;0m'
 _clr_orange=$'\e[38;2;255;106;0m'
+_clr_bold=$'\e[1m'
 _clr_reset=$'\e[0m'
 
 # Installers
@@ -1853,6 +1856,19 @@ _get_asset_info()
   printf '%s %b\n' \
     "${_clr_orange}${FUNCNAME[1]#_ghlr_}${_clr_reset}" \
     "${_clr_blue}${d}${_clr_reset}"
+}
+
+# Checks platform support
+_supported_platform()
+{
+  local archs=archs_${KERNEL}
+  if [[ ",${!archs-}," != *",${ARCH},"* ]]; then
+    printf '%s %s %s\n' \
+      "${_clr_orange}${asset}${_clr_reset}" \
+      "${_clr_red}is not supported on the current platform and will be skipped..${_clr_reset}" \
+      >&2
+    return 1
+  fi
 }
 
 # Manages .installed
