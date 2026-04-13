@@ -95,6 +95,7 @@ _ghlr_registry=oras,regclient,skopeo
 _ghlr_security=trivy
 _ghlr_image=dockle,dive,hadolint,mintoolkit
 _ghlr_talos=talosctl,ttx,talos_ps1,talhelper,talm,flux
+_ghlr_taskwarrior=taskwarrior_tui
 
 # dependencies
 _ghlr_kubectx=fzf
@@ -1303,6 +1304,50 @@ _ghlr_talosctl()
       talosctl completion bash >"${BCD_PATH}"/talosctl
       talosctl completion zsh >"${ZCD_PATH}"/_talosctl
       talosctl completion fish >"${FCD_PATH}"/talosctl.fish
+      ;;
+    remove) _remove_asset ;;
+    clean) _clean_asset ;;
+    info) _get_asset_info ;;
+    *) false ;;
+  esac
+}
+
+# taskwarrior-tui
+_ghlr_taskwarrior_tui()
+{
+  local repo=taskwarrior-tui owner=kdheepak asset=taskwarrior-tui
+  case ${1} in
+    install)
+      local KERNEL=${KERNEL/linux/unknown-linux-musl}
+      local KERNEL=${KERNEL/darwin/apple-darwin}
+      local ARCH=${ARCH/amd64/x86_64}
+      local ARCH=${ARCH/arm64/aarch64}
+      local asset_ext=tar.gz
+      local asset_url='${asset}-${ARCH}-${KERNEL}.${asset_ext}'
+      local asset_tar=${asset}
+      _latest_release_asset
+      ;;
+    postinstall)
+      # bash
+      local asset_url=completions/taskwarrior-tui.bash
+      local asset_out='taskwarrior-tui-bash-completion-${asset_rel}-${asset_sha}'
+      local asset_cpf='taskwarrior-bash-completion-*'
+      local asset_path="${BCD_PATH}"
+      _latest_release_raw_asset
+      # zsh
+      local asset_url=completions/_taskwarrior-tui
+      local asset_out='taskwarrior-tui-zsh-completion-${asset_rel}-${asset_sha}'
+      local asset_cpf='taskwarrior-tui-zsh-completion-*'
+      local asset_path="${ZCD_PATH}"
+      local asset=_taskwarrior-tui
+      _latest_release_raw_asset
+      # fish
+      local asset_url=completions/taskwarrior-tui.fish
+      local asset_out='taskwarrior-tui-fish-completion-${asset_rel}-${asset_sha}'
+      local asset_cpf='taskwarrior-tui-fish-completion-*'
+      local asset_path="${FCD_PATH}"
+      local asset=taskwarrior-tui.fish
+      _latest_release_raw_asset
       ;;
     remove) _remove_asset ;;
     clean) _clean_asset ;;
