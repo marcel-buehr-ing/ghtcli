@@ -98,6 +98,7 @@ _ghlr_talos=talosctl,ttx,talos_ps1,talhelper,talm,flux
 _ghlr_taskwarrior=taskwarrior_tui
 
 # dependencies
+_ghlr_cilium=hubble
 _ghlr_kubectx=fzf
 _ghlr_kubens=fzf
 _ghlr_regclient=regbot,regctl,regsync
@@ -202,6 +203,54 @@ _ghlr_carapace()
       carapace carapace bash >"${BCD_PATH}"/carapace
       carapace carapace zsh >"${ZCD_PATH}"/_carapace
       carapace carapace fish >"${FCD_PATH}"/carapace.fish
+      ;;
+    remove) _remove_asset ;;
+    clean) _clean_asset ;;
+    info) _get_asset_info ;;
+    *) false ;;
+  esac
+}
+
+# cilium-cli
+_ghlr_cilium()
+{
+  local repo=cilium-cli owner=cilium asset=cilium
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
+  case ${1} in
+    install)
+      _supported_platform || return 0
+      local asset_ext=tar.gz
+      local asset_tar=cilium
+      _latest_release_asset
+      ;;
+    postinstall)
+      cilium completion bash >"${BCD_PATH}"/cilium
+      cilium completion zsh >"${ZCD_PATH}"/_cilium
+      cilium completion fish >"${FCD_PATH}"/cilium.fish
+      ;;
+    remove) _remove_asset ;;
+    clean) _clean_asset ;;
+    info) _get_asset_info ;;
+    *) false ;;
+  esac
+}
+
+# cilium-hubble
+_ghlr_hubble()
+{
+  local repo=hubble owner=cilium asset=hubble
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
+  case ${1} in
+    install)
+      _supported_platform || return 0
+      local asset_ext=tar.gz
+      local asset_tar=hubble
+      _latest_release_asset
+      ;;
+    postinstall)
+      hubble completion bash >"${BCD_PATH}"/hubble
+      hubble completion zsh >"${ZCD_PATH}"/_hubble
+      hubble completion fish >"${FCD_PATH}"/hubble.fish
       ;;
     remove) _remove_asset ;;
     clean) _clean_asset ;;
