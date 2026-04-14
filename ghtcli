@@ -613,7 +613,7 @@ _ghlr_jq()
     postinstall)
       # jq completion bash >"${BCD_PATH}"/jq
       local repo=bash-completion owner=scop asset=jq
-      local asset_url=completions/jq
+      local asset_url=completions-core/jq.bash
       local asset_out='${asset}-${repo}-${asset_sha}'
       local asset_cpf='${asset}-${repo}-*'
       local asset_path="${BCD_PATH}"
