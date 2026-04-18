@@ -29,28 +29,6 @@ else
   AUTH_HEADER=''
 fi
 
-# Target folders
-if [[ $(id -u) -eq 0 ]]; then
-  # all users of the system
-  mkdir -p /var/cache/ghtcli; cd $_                       # work-dir
-  mkdir -p /etc/ghtcli; CFG_PATH=$_                       # config-path
-  mkdir -p /usr/local/bin; BIN_PATH=$_                    # binary-path
-  mkdir -p /usr/local/libexec; LIBEXEC_PATH=$_            # libexec-path
-  mkdir -p /etc/fish/completions; FCD_PATH=$_             # fish-completion
-  mkdir -p /etc/bash_completion.d; BCD_PATH=$_            # bash-completion
-  mkdir -p /usr/share/zsh/vendor-completions; ZCD_PATH=$_ # zsh-completion
-else
-  # single user
-  mkdir -p "${HOME}"/.cache/ghtcli; cd $_                                  # work-dir
-  mkdir -p "${HOME}"/.config/ghtcli; CFG_PATH=$_                           # config-path
-  mkdir -p "${HOME}"/.local/bin; BIN_PATH=$_                               # binary-path
-  mkdir -p "${HOME}"/.local/libexec; LIBEXEC_PATH=$_                       # libexec-path
-  mkdir -p "${HOME}"/.config/fish/completions; FCD_PATH=$_                 # fish-completion
-  mkdir -p "${HOME}"/.local/share/bash-completion/completions; BCD_PATH=$_ # bash-completion
-  mkdir -p "${HOME}"/.zsh/completion; ZCD_PATH=$_                          # zsh-completion
-fi
-PATH="${BIN_PATH}:${PATH}"
-
 # Map to standard architecture names
 declare -l ARCH
 case $(uname -m) in
@@ -76,6 +54,35 @@ if [[ ${KERNEL} == darwin ]]; then
 else
   alias sed='sed -i'
 fi
+
+# Target files and folders
+if [[ $(id -u) -eq 0 ]]; then
+  # all users of the system
+  mkdir -p /var/cache/ghtcli; cd $_                       # work-dir
+  mkdir -p /etc/ghtcli; CFG_PATH=$_                       # config-path
+  mkdir -p /usr/local/bin; BIN_PATH=$_                    # binary-path
+  mkdir -p /usr/local/libexec; LIBEXEC_PATH=$_            # libexec-path
+  mkdir -p /etc/fish/conf.d; FRC_PATH=$_                  # fish-rcpath
+  mkdir -p /etc/fish/completions; FCD_PATH=$_             # fish-completion
+  test  -f /etc/bashrc && BRC_FILE=$_                     # bash-rcfile (rhel/macOS)
+  test  -f /etc/bash.bashrc && BRC_FILE=$_                # bash-rcfile (debian)
+  mkdir -p /etc/bash_completion.d; BCD_PATH=$_            # bash-completion
+  test  -e /etc/zshrc || touch /etc/zshrc; ZRC_FILE=$_    # zsh-rcfile
+  mkdir -p /usr/share/zsh/vendor-completions; ZCD_PATH=$_ # zsh-completion
+else
+  # single user
+  mkdir -p "${HOME}"/.cache/ghtcli; cd $_                                  # work-dir
+  mkdir -p "${HOME}"/.config/ghtcli; CFG_PATH=$_                           # config-path
+  mkdir -p "${HOME}"/.local/bin; BIN_PATH=$_                               # binary-path
+  mkdir -p "${HOME}"/.local/libexec; LIBEXEC_PATH=$_                       # libexec-path
+  mkdir -p "${HOME}"/.config/fish/conf.d; FRC_PATH=$_                      # fish-rcfile
+  mkdir -p "${HOME}"/.config/fish/completions; FCD_PATH=$_                 # fish-completion
+  test  -e "${HOME}"/.bashrc || touch "${HOME}"/.bashrc; BRC_FILE=$_       # bash-rcfile
+  mkdir -p "${HOME}"/.local/share/bash-completion/completions; BCD_PATH=$_ # bash-completion
+  test  -e "${HOME}"/.zshrc || touch "${HOME}"/.zshrc; ZRC_FILE=$_         # zsh-rcfile
+  mkdir -p "${HOME}"/.zsh/completion; ZCD_PATH=$_                          # zsh-completion
+fi
+PATH="${BIN_PATH}:${PATH}"
 
 #
 # Application groups and dependencies
