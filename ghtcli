@@ -343,6 +343,43 @@ _ghlr_curl()
   esac
 }
 
+# direnv
+_ghlr_direnv()
+{
+  local repo=direnv owner=direnv asset=direnv
+  local archs_linux=arm,amd64,arm64 archs_darwin=amd64,arm64
+  case ${1} in
+    install)
+      _supported_platform || return 0
+      local ARCH=${ARCH/armv*/arm}
+      local asset_url='${asset}.${KERNEL}-${ARCH}'
+      _latest_release_asset
+      ;;
+    postinstall)
+      carapace direnv bash >"${BCD_PATH}"/direnv
+      carapace direnv zsh >"${ZCD_PATH}"/_direnv
+      carapace direnv fish >"${FCD_PATH}"/direnv.fish
+      grep -q 'direnv hook bash' "${BRC_FILE}" 2>/dev/null \
+        || printf 'eval "$(direnv hook bash)"\n' >>"${BRC_FILE}"
+      grep -q 'direnv hook zsh' "${ZRC_FILE}" 2>/dev/null \
+        || printf 'eval "$(direnv hook zsh)"\n' >>"${ZRC_FILE}"
+      grep -q 'direnv hook fish' "${FRC_PATH}"/direnv.fish 2>/dev/null \
+        || printf 'eval "$(direnv hook fish)"\n' >>"${FRC_PATH}"/direnv.fish
+      ;;
+    remove)
+      _remove_asset
+      sed '/direnv hook bash/d' "${BRC_FILE}"
+      sed '/direnv hook zsh/d' "${ZRC_FILE}"
+      sed '/direnv hook fish/d' "${FRC_PATH}"/direnv.fish
+      test -s "${FRC_PATH}"/direnv.fish \
+        || rm -vf "${FRC_PATH}"/direnv.fish
+      ;;
+    clean) _clean_asset ;;
+    info) _get_asset_info ;;
+    *) false ;;
+  esac
+}
+
 # dive
 _ghlr_dive()
 {
