@@ -270,8 +270,10 @@ _ghlr_hubble()
 _ghlr_cmctl()
 {
   local repo=cmctl owner=cert-manager asset=cmctl
+  local archs_linux=arm,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/armv*/arm}
       local asset_url='${asset}_${KERNEL}_${ARCH}'
       _latest_release_asset
@@ -292,8 +294,10 @@ _ghlr_cmctl()
 _ghlr_ctop()
 {
   local repo=ctop owner=bcicen asset=ctop
+  local archs_linux=arm,amd64,arm64 archs_darwin=amd64
   case ${1} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/armv*/arm}
       local asset_url='${asset}-${asset_rel//[^0-9.]}-${KERNEL}-${ARCH}'
       _latest_release_asset
@@ -1014,16 +1018,11 @@ _ghlr_mintoolkit()
 _ghlr_nerdctl()
 {
   local repo=nerdctl owner=containerd asset=nerdctl
+  local archs_linux=armv7,amd64,arm64
   case ${1} in
     install)
-      if [[ ${KERNEL} == darwin ]]; then
-        printf '%s %s %s\n' \
-          "${_clr_red}Ignored${_clr_reset}" \
-          "${_clr_blue}nerdctl${_clr_reset}" \
-          "Is not compatible with ${_clr_orange}macOS${_clr_reset}" \
-          >&2
-        return
-      fi
+      _supported_platform || return 0
+      local ARCH=${ARCH/armv7/arm-v7}
       local asset_ext=tar.gz
       local asset_url='nerdctl-${asset_rel//[^0-9.]}-${KERNEL}-${ARCH}.${asset_ext}'
       local asset_out='nerdctl-${asset_rel}-${KERNEL}-${ARCH}'
@@ -1055,8 +1054,10 @@ _ghlr_nerdctl()
 _ghlr_openbao()
 {
   local repo=openbao owner=openbao asset=bao
+  local archs_linux=armv6,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/amd64/x86_64}
       local asset_ext=tar.gz
       local asset_url='${asset}_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
@@ -1081,17 +1082,10 @@ _ghlr_openbao()
 _ghlr_openbao_hsm()
 {
   local repo=openbao owner=openbao asset=bao
+  local archs_linux=amd64,arm64
   case ${1} in
     install)
-      if [[ ${KERNEL} == darwin ]]; then
-        printf '%s %s %s\n%s\n' \
-          "${_clr_red}Ignored${_clr_reset}" \
-          "${_clr_blue}openbao_hsm${_clr_reset}" \
-          "Is not compatible with ${_clr_orange}macOS${_clr_reset}" \
-          "💡 Use OpenBao without HSM support with ${_clr_orange}ghtcli ${_clr_blue}install ${_clr_red}openbao${_clr_reset}" \
-          >&2
-        return
-      fi
+      _supported_platform || return 0
       local ARCH=${ARCH/amd64/x86_64}
       local asset_ext=tar.gz
       local asset_url='${asset}-hsm_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
@@ -1605,6 +1599,7 @@ _clr_blue=$'\e[38;2;0;128;255m'
 _clr_green=$'\e[38;2;0;200;0m'
 _clr_orange=$'\e[38;2;255;106;0m'
 _clr_bold=$'\e[1m'
+_clr_unbold=$'\e[22m'
 _clr_reset=$'\e[0m'
 
 # Installers
@@ -1957,7 +1952,7 @@ _supported_platform()
   local archs=archs_${KERNEL}
   if [[ ",${!archs-}," != *",${ARCH},"* ]]; then
     printf '%s %s %s\n' \
-      "${_clr_orange}${asset}${_clr_reset}" \
+      "${_clr_orange}${FUNCNAME[1]#_ghlr_}${_clr_reset}" \
       "${_clr_red}is not supported on the current platform and will be skipped..${_clr_reset}" \
       >&2
     return 1
