@@ -162,8 +162,10 @@ _ghlr_ghtcli()
 _ghlr_age()
 {
   local repo=age owner=FiloSottile asset=age
+  local archs_linux=armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/armv*/arm}
       local asset_ext=tar.gz
       local asset_url='age-${asset_rel}-${KERNEL}-${ARCH}.${asset_ext#.}'
@@ -199,8 +201,10 @@ _ghlr_age()
 _ghlr_carapace()
 {
   local repo=carapace-bin owner=carapace-sh asset=carapace
+  local archs_linux=386,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local asset_ext=tar.gz
       local asset_url='${asset}-bin_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
       local asset_tar=carapace
@@ -270,7 +274,7 @@ _ghlr_hubble()
 _ghlr_cmctl()
 {
   local repo=cmctl owner=cert-manager asset=cmctl
-  local archs_linux=arm,amd64,arm64 archs_darwin=amd64,arm64
+  local archs_linux=armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
       _supported_platform || return 0
@@ -294,7 +298,7 @@ _ghlr_cmctl()
 _ghlr_ctop()
 {
   local repo=ctop owner=bcicen asset=ctop
-  local archs_linux=arm,amd64,arm64 archs_darwin=amd64
+  local archs_linux=armv7,amd64,arm64 archs_darwin=amd64
   case ${1} in
     install)
       _supported_platform || return 0
@@ -314,8 +318,10 @@ _ghlr_ctop()
 _ghlr_curl()
 {
   local repo=static-curl owner=stunnel asset=curl
+  local archs_linux=386,armv5,armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local CURL_CA_BUNDLE="${CURL_CA_BUNDLE:-/etc/ssl/certs/ca-certificates.crt}"
       if [[ ! -r "${CURL_CA_BUNDLE}" ]]; then
         printf '%s %s %s\n%s\n' \
@@ -351,7 +357,7 @@ _ghlr_curl()
 _ghlr_direnv()
 {
   local repo=direnv owner=direnv asset=direnv
-  local archs_linux=arm,amd64,arm64 archs_darwin=amd64,arm64
+  local archs_linux=armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
       _supported_platform || return 0
@@ -388,8 +394,10 @@ _ghlr_direnv()
 _ghlr_dive()
 {
   local repo=dive owner=wagoodman asset=dive
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local asset_ext=tar.gz
       local asset_url='${asset}_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
       local asset_tar=dive
@@ -411,8 +419,10 @@ _ghlr_dive()
 _ghlr_dockle()
 {
   local repo=dockle owner=goodwithtech asset=dockle
+  local archs_linux=armv7,386,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local KERNEL=${KERNEL/linux/Linux}
       local KERNEL=${KERNEL/darwin/macOS}
       local ARCH=${ARCH/amd64/64bit}
@@ -435,8 +445,10 @@ _ghlr_dockle()
 _ghlr_doctl()
 {
   local repo=doctl owner=digitalocean asset=doctl
+  local archs_linux=386,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local asset_ext=tar.gz
       local asset_url='${asset}-${asset_rel//[^0-9.]}-${KERNEL}-${ARCH}.${asset_ext}'
       local asset_tar=doctl
@@ -461,8 +473,10 @@ _ghlr_doctl()
 _ghlr_docuum()
 {
   local repo=docuum owner=stepchowfun asset=docuum
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local KERNEL=${KERNEL/linux/unknown-linux-musl}
       local KERNEL=${KERNEL/darwin/apple-darwin}
       local ARCH=${ARCH/amd64/x86_64}
@@ -482,8 +496,10 @@ _ghlr_docuum()
 _ghlr_dry()
 {
   local repo=dry owner=moncho asset=dry
+  local archs_linux=386,armv6,armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local asset_url='${asset}-${KERNEL}-${ARCH}'
       _latest_release_asset
       ;;
@@ -499,8 +515,10 @@ _ghlr_dry()
 _ghlr_flux()
 {
   local repo=flux2 owner=fluxcd asset=flux
+  local archs_linux=armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/armv*/arm}
       local asset_ext=tar.gz
       local asset_url='${asset}_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
@@ -523,8 +541,10 @@ _ghlr_flux()
 _ghlr_fzf()
 {
   local repo=fzf owner=junegunn asset=fzf
+  local archs_linux=armv5,armv6,armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local asset_ext=tar.gz
       local asset_url='${asset}-${asset_rel//[^0-9.]}-${KERNEL}_${ARCH}.${asset_ext}'
       local asset_tar=fzf
@@ -546,8 +566,10 @@ _ghlr_fzf()
 _ghlr_glab()
 {
   local repo=glab owner=gl-cli asset=glab
+  local archs_linux=386,armv6,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local asset_ext=tar.gz
       local asset_rel="$(curl ${AUTH_HEADER:+-H "${AUTH_HEADER}"} -fsSL https://api.github.com/repos/gl-cli/glab/tags |jq -r '.[0].name')"
       local asset_dwl='https://gitlab.com/gitlab-org/cli/-/releases/${asset_rel}/downloads/${asset}_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
@@ -570,8 +592,10 @@ _ghlr_glab()
 _ghlr_hadolint()
 {
   local repo=hadolint owner=hadolint asset=hadolint
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local KERNEL=${KERNEL/darwin/macos}
       local ARCH=${ARCH/amd64/x86_64}
       local asset_url='${asset}-${KERNEL}-${ARCH}'
@@ -589,8 +613,10 @@ _ghlr_hadolint()
 _ghlr_helm()
 {
   local repo=helm owner=helm asset=helm
+  local archs_linux=386,armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/armv7/arm}
       local asset_ext=tar.gz
       local asset_tar='${KERNEL}-${ARCH}/${asset}'
@@ -614,8 +640,10 @@ _ghlr_helm()
 _ghlr_helm_ct()
 {
   local repo=chart-testing owner=helm asset=ct
+  local archs_linux=armv6,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local asset_ext=tar.gz
       local asset_url='${repo}_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
       local asset_tar=ct
@@ -652,9 +680,12 @@ _ghlr_helm_ct()
 _ghlr_jq()
 {
   local repo=jq owner=jqlang asset=jq
+  local archs_linux=386,armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/386/i386}
+      local ARCH=${ARCH/armv7/armhf}
       local KERNEL=${KERNEL/darwin/macos}
       _latest_release_asset
       ;;
@@ -681,8 +712,10 @@ _ghlr_jq()
 _ghlr_k9s()
 {
   local repo=k9s owner=derailed asset=k9s
+  local archs_linux=armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local asset_ext=tar.gz
       local asset_url='${asset}_${KERNEL^}_${ARCH}.${asset_ext}'
       local asset_tar=k9s
@@ -704,8 +737,10 @@ _ghlr_k9s()
 _ghlr_krew()
 {
   local repo=krew owner=kubernetes-sigs asset=krew
+  local archs_linux=armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/armv*/arm}
       local asset_ext=tar.gz
       local asset_url='${asset}-${KERNEL}_${ARCH}.${asset_ext}'
@@ -745,8 +780,10 @@ _ghlr_kube_ps1()
 _ghlr_kubectl()
 {
   local repo=kubectl owner=kubernetes asset=kubectl
+  local archs_linux=386,armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/armv*/arm}
       local asset_rel="$(curl -fsSL https://dl.k8s.io/release/stable.txt)"
       local asset_dwl='https://dl.k8s.io/release/${asset_rel}/bin/${KERNEL}/${ARCH}/${asset}'
@@ -768,8 +805,10 @@ _ghlr_kubectl()
 _ghlr_kubectx()
 {
   local repo=kubectx owner=ahmetb asset=ktx
+  local archs_linux=armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/amd64/x86_64}
       local asset_ext=tar.gz
       local asset_url='kubectx_${asset_rel}_${KERNEL}_${ARCH}.${asset_ext}'
@@ -821,8 +860,10 @@ _ghlr_kubectx()
 _ghlr_kubens()
 {
   local repo=kubectx owner=ahmetb asset=kns
+  local archs_linux=armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/amd64/x86_64}
       local asset_ext=tar.gz
       local asset_url='kubens_${asset_rel}_${KERNEL}_${ARCH}.${asset_ext}'
@@ -870,8 +911,10 @@ _ghlr_kubens()
 _ghlr_kubie()
 {
   local repo=kubie owner=sbstp asset=kubie
+  local archs_linux=armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/armv*/arm32}
       _latest_release_asset
       ;;
@@ -891,8 +934,10 @@ _ghlr_kubie()
 _ghlr_kustomize()
 {
   local repo=kustomize owner=kubernetes-sigs asset=kustomize
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       # asset_rhel (.tag_name) = kustomize/v1.2.3
       local asset_ext=tar.gz
       local asset_url='${asset}_${asset_rel//[^v0-9.]}_${KERNEL^}_${ARCH}.${asset_ext}'
@@ -917,8 +962,11 @@ _ghlr_kustomize()
 _ghlr_lazydocker()
 {
   local repo=lazydocker owner=jesseduffield asset=lazydocker
+  local archs_linux=386,armv6,armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
+      local ARCH=${ARCH/386/x86}
       local ARCH=${ARCH/amd64/x86_64}
       local asset_ext=tar.gz
       local asset_url='${asset}_${asset_rel//[^0-9.]}_${KERNEL^}_${ARCH}.${asset_ext}'
@@ -937,8 +985,11 @@ _ghlr_lazydocker()
 _ghlr_lazygit()
 {
   local repo=lazygit owner=jesseduffield asset=lazygit
+  local archs_linux=386,armv6,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
+      local ARCH=${ARCH/386/32-bit}
       local ARCH=${ARCH/amd64/x86_64}
       local asset_ext=tar.gz
       local asset_url='${asset}_${asset_rel//[^0-9.]}_${KERNEL^}_${ARCH}.${asset_ext}'
@@ -957,8 +1008,10 @@ _ghlr_lazygit()
 _ghlr_mc()
 {
   local repo=mc owner=minio asset=mc
+  local archs_linux=armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/armv7/arm}
       local asset_url="${KERNEL}-${ARCH}/mc"
       local asset_dwl='https://dl.min.io/client/mc/release/${asset_url}'
@@ -981,8 +1034,10 @@ _ghlr_mc()
 _ghlr_mintoolkit()
 {
   local repo=mint owner=mintoolkit asset=mint
+  local archs_linux=armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/armv*/arm}
       local ARCH=${ARCH/amd64/}
       local asset_ext=tar.gz
@@ -1111,8 +1166,10 @@ _ghlr_openbao_hsm()
 _ghlr_opentofu()
 {
   local repo=opentofu owner=opentofu asset=tofu
+  local archs_linux=386,armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/armv*/arm}
       local asset_ext=tar.gz
       local asset_url='${asset}_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
@@ -1136,8 +1193,10 @@ _ghlr_opentofu()
 _ghlr_oras()
 {
   local repo=oras owner=oras-project asset=oras
+  local archs_linux=armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local asset_ext=tar.gz
       local asset_url='${asset}_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
       local asset_tar=oras
@@ -1159,13 +1218,14 @@ _ghlr_oras()
 _ghlr_rclone()
 {
   local repo=rclone owner=rclone asset=rclone
+  local archs_linux=386,armv5,armv6,rmv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local KERNEL=${KERNEL/darwin/osx}
       local ARCH=${ARCH/armv7/arm-v7}
       local ARCH=${ARCH/armv6/arm-v6}
       local ARCH=${ARCH/armv5/arm-v5}
-      local ARCH=${ARCH/i386/386}
       local asset_ext=zip
       local asset_url='${asset}-${asset_rel}-${KERNEL}-${ARCH}.${asset_ext}'
       local asset_zip='${asset}-${asset_rel}-${KERNEL}-${ARCH}/${asset}'
@@ -1187,8 +1247,10 @@ _ghlr_rclone()
 _ghlr_regbot()
 {
   local repo=regclient owner=regclient asset=regbot
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local asset_url='${asset}-${KERNEL}-${ARCH}'
       _latest_release_asset
       ;;
@@ -1208,8 +1270,10 @@ _ghlr_regbot()
 _ghlr_regctl()
 {
   local repo=regclient owner=regclient asset=regctl
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local asset_url='${asset}-${KERNEL}-${ARCH}'
       _latest_release_asset
       ;;
@@ -1229,8 +1293,10 @@ _ghlr_regctl()
 _ghlr_regsync()
 {
   local repo=regclient owner=regclient asset=regsync
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local asset_url='${asset}-${KERNEL}-${ARCH}'
       _latest_release_asset
       ;;
@@ -1250,8 +1316,10 @@ _ghlr_regsync()
 _ghlr_skopeo()
 {
   local repo=skopeo-binary owner=lework asset=skopeo
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       _latest_release_asset
       ;;
     postinstall)
@@ -1270,8 +1338,10 @@ _ghlr_skopeo()
 _ghlr_sops()
 {
   local repo=sops owner=getsops asset=sops
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local asset_url='${asset}-${asset_rel}.${KERNEL}.${ARCH}'
       _latest_release_asset
       ;;
@@ -1290,8 +1360,10 @@ _ghlr_sops()
 _ghlr_stern()
 {
   local repo=stern owner=stern asset=stern
+  local archs_linux=armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/armv*/arm}
       local asset_ext=tar.gz
       local asset_url='${asset}_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
@@ -1314,8 +1386,10 @@ _ghlr_stern()
 _ghlr_talhelper()
 {
   local repo=talhelper owner=budimanjojo asset=talhelper
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local asset_ext=tar.gz
       local asset_url='${asset}_${KERNEL}_${ARCH}.${asset_ext}'
       local asset_tar=talhelper
@@ -1337,8 +1411,10 @@ _ghlr_talhelper()
 _ghlr_talm()
 {
   local repo=talm owner=cozystack asset=talm
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/386/i386}
       local asset_ext=tar.gz
       local asset_url='${asset}-${KERNEL}-${ARCH}.${asset_ext}'
@@ -1383,8 +1459,10 @@ _ghlr_talos_ps1()
 _ghlr_talosctl()
 {
   local repo=talos owner=siderolabs asset=talosctl
+  local archs_linux=armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       _latest_release_asset
       ;;
     postinstall)
@@ -1449,8 +1527,10 @@ _ghlr_taskwarrior_tui()
 _ghlr_trivy()
 {
   local repo=trivy owner=aquasecurity asset=trivy
+  local archs_linux=armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local KERNEL=${KERNEL/linux/Linux}
       local KERNEL=${KERNEL/darwin/macOS}
       local ARCH=${ARCH/386/32bit}
@@ -1496,8 +1576,10 @@ _ghlr_ttx()
 _ghlr_terraform()
 {
   local repo=terraform owner=hashicorp asset=terraform
+  local archs_linux=386,armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1-} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/armv*/arm}
       local asset_ext=zip
       local asset_url='${asset}_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
@@ -1522,8 +1604,10 @@ _ghlr_terraform()
 _ghlr_vault()
 {
   local repo=vault owner=hashicorp asset=vault
+  local archs_linux=386,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/armv*/arm}
       local asset_ext=zip
       local asset_url='${asset}_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
@@ -1548,8 +1632,10 @@ _ghlr_vault()
 _ghlr_velero()
 {
   local repo=velero owner=vmware-tanzu asset=velero
+  local archs_linux=armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
       local ARCH=${ARCH/armv*/arm}
       local asset_ext=tar.gz
       local asset_url='${asset}-${asset_rel}-${KERNEL}-${ARCH}.${asset_ext}'
@@ -1572,8 +1658,11 @@ _ghlr_velero()
 _ghlr_yq()
 {
   local repo=yq owner=mikefarah asset=yq
+  local archs_linux=386,armv7,amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
+      _supported_platform || return 0
+      local ARCH=${ARCH/armv*/arm}
       local asset_url='${asset}_${KERNEL}_${ARCH}'
       _latest_release_asset
       ;;
