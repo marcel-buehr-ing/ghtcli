@@ -89,7 +89,7 @@ PATH="${BIN_PATH}:${PATH}"
 #
 
 # groups
-_ghlr_ai=codex
+_ghlr_ai=codex,claude
 _ghlr_aquasecurity=trivy
 _ghlr_digitalocean=doctl
 _ghlr_docker=ctop,lazydocker,dry,docuum
@@ -264,6 +264,34 @@ _ghlr_hubble()
       hubble completion zsh >"${ZCD_PATH}"/_hubble
       hubble completion fish >"${FCD_PATH}"/hubble.fish
       ;;
+    remove) _remove_asset ;;
+    clean) _clean_asset ;;
+    info) _get_asset_info ;;
+    *) false ;;
+  esac
+}
+
+# claude-code
+_ghlr_claude()
+{
+  local repo=claude-code owner=anthropics asset=claude
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
+  case ${1} in
+    install)
+      _supported_platform || return 0
+      local ARCH=${ARCH/amd64/x64}
+      local asset_rel="$(curl -fsSL https://downloads.claude.ai/claude-code-releases/latest)"
+      local asset_dwl='https://downloads.claude.ai/claude-code-releases/${asset_rel}/${KERNEL}-${ARCH}/${asset}'
+      _latest_release_asset
+      ;;
+    postinstall) true ;;
+      # TODO
+      # https://github.com/jlhg/claude-bash-completion.git
+      # https://raw.githubusercontent.com/wbingli/zsh-claudecode-completion/main/_claude
+      #claude completion bash >"${BCD_PATH}"/claude
+      #claude completion zsh >"${ZCD_PATH}"/_claude
+      #claude completion fish >"${FCD_PATH}"/claude.fish
+      #;;
     remove) _remove_asset ;;
     clean) _clean_asset ;;
     info) _get_asset_info ;;
