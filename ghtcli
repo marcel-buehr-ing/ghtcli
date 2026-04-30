@@ -1712,6 +1712,35 @@ _ghlr_velero()
   esac
 }
 
+# vykar
+_ghlr_vykar()
+{
+  local repo=vykar owner=borgbase asset=vykar
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
+  case ${1} in
+    install)
+      _supported_platform || return 0
+      local KERNEL=${KERNEL/linux/unknown-linux-musl}
+      local KERNEL=${KERNEL/darwin/apple-darwin}
+      local ARCH=${ARCH/amd64/x86_64}
+      local ARCH=${ARCH/arm64/aarch64}
+      local asset_ext=tar.gz
+      local asset_url='vykar-${asset_rel}-${ARCH}-${KERNEL}.${asset_ext}'
+      local asset_out='vykar-${asset_rel}-${KERNEL}-${ARCH}'
+      local asset_tar=vykar
+      _latest_release_asset
+      local asset=vykar-server
+      local asset_tar=vykar-server
+      _latest_release_asset
+      ;;
+    postinstall) true ;;
+    remove) _remove_asset ;;
+    clean) _clean_asset ;;
+    info) _get_asset_info ;;
+    *) false ;;
+  esac
+}
+
 # yq
 _ghlr_yq()
 {
