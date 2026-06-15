@@ -96,7 +96,7 @@ _ghlr_docker=ctop,lazydocker,dry,docuum
 _ghtlr_git=lazygit
 _ghlr_gitlab=glab
 _ghlr_hashicorp=vault,terraform
-_ghlr_kube=kubectl,kube_ps1,krew,kubie,kubectx,kubens,k9s,stern,kustomize,helm,helm_ct,pv_migrate
+_ghlr_kube=kubectl,kube_ps1,krew,kubie,kubectx,kubens,k9s,ktop,stern,kustomize,helm,helm_ct,pv_migrate
 _ghlr_lazy=lazydocker,lazygit
 _ghlr_minio=mc,rclone
 _ghlr_registry=oras,regclient,skopeo
@@ -803,6 +803,27 @@ _ghlr_krew()
       local asset_ext=tar.gz
       local asset_url='${asset}-${KERNEL}_${ARCH}.${asset_ext}'
       local asset_tar='./krew-${KERNEL}_${ARCH}'
+      _latest_release_asset
+      ;;
+    postinstall) true ;;
+    remove) _remove_asset ;;
+    clean) _clean_asset ;;
+    info) _get_asset_info ;;
+    *) false ;;
+  esac
+}
+
+# ktop
+_ghlr_ktop()
+{
+  local repo=ktop owner=vladimirvivien asset=ktop
+  local archs_linux=armv7,amd64,arm64,riscv64 archs_darwin=amd64,arm64
+  case ${1} in
+    install)
+      _supported_platform || return 0
+      local asset_ext=tar.gz
+      local asset_url='${asset}_${asset_rel}_${KERNEL}_${ARCH}.${asset_ext}'
+      local asset_tar=ktop
       _latest_release_asset
       ;;
     postinstall) true ;;
