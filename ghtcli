@@ -96,7 +96,7 @@ _ghlr_docker=ctop,lazydocker,dry,docuum
 _ghtlr_git=lazygit
 _ghlr_gitlab=glab
 _ghlr_hashicorp=vault,terraform
-_ghlr_kube=kubectl,kube_ps1,krew,kubie,kubectx,kubens,k9s,stern,kustomize,helm,helm_ct
+_ghlr_kube=kubectl,kube_ps1,krew,kubie,kubectx,kubens,k9s,stern,kustomize,helm,helm_ct,pv_migrate
 _ghlr_lazy=lazydocker,lazygit
 _ghlr_minio=mc,rclone
 _ghlr_registry=oras,regclient,skopeo
@@ -1264,6 +1264,31 @@ _ghlr_oras()
       oras completion bash >"${BCD_PATH}"/oras
       oras completion zsh >"${ZCD_PATH}"/_oras
       oras completion fish >"${FCD_PATH}"/oras.fish
+      ;;
+    remove) _remove_asset ;;
+    clean) _clean_asset ;;
+    info) _get_asset_info ;;
+    *) false ;;
+  esac
+}
+
+# pv-migrate
+_ghlr_pv_migrate()
+{
+  local repo=pv-migrate owner=utkuozdemir asset=pv-migrate
+  local archs_linux=armv7,amd64,arm64 archs_darwin=amd64,arm64
+  case ${1} in
+    install)
+      _supported_platform || return 0
+      local asset_ext=tar.gz
+      local asset_url='${asset}_${asset_rel}_${KERNEL}_${ARCH}.${asset_ext}'
+      local asset_tar=pv-migrate
+      _latest_release_asset
+      ;;
+    postinstall)
+      pv-migrate completion bash >"${BCD_PATH}"/pv-migrate
+      pv-migrate completion zsh >"${ZCD_PATH}"/_pv-migrate
+      pv-migrate completion fish >"${FCD_PATH}"/pv-migrate.fish
       ;;
     remove) _remove_asset ;;
     clean) _clean_asset ;;
