@@ -1301,6 +1301,7 @@ _ghlr_pv_migrate()
   case ${1} in
     install)
       _supported_platform || return 0
+      local ARCH=${ARCH/amd64/x86_64}
       local asset_ext=tar.gz
       local asset_url='${asset}_${asset_rel}_${KERNEL}_${ARCH}.${asset_ext}'
       local asset_tar=pv-migrate
