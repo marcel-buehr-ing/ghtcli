@@ -98,7 +98,7 @@ _ghlr_gitlab=glab
 _ghlr_hashicorp=vault,terraform
 _ghlr_kube=kubectl,kube_ps1,krew,kubie,kubectx,kubens,k9s,ktop,stern,kustomize,helm,helm_ct,pv_migrate
 _ghlr_lazy=lazydocker,lazygit
-_ghlr_markdown=glow
+_ghlr_markdown=bat,glow
 _ghlr_minio=mc,rclone
 _ghlr_registry=oras,regclient,skopeo
 _ghlr_security=trivy
@@ -193,6 +193,37 @@ _ghlr_age()
       rm -vf "${ZCD_PATH}"/_age-keygen
       rm -vf "${FCD_PATH}"/age-keygen.fish
       ;;
+    clean) _clean_asset ;;
+    info) _get_asset_info ;;
+    *) false ;;
+  esac
+}
+
+# bat
+_ghlr_bat()
+{
+  local repo=bat owner=sharkdp asset=bat
+  local archs_linux=386,armv7,amd64,arm64 archs_darwin=amd64,arm64
+  case ${1} in
+    install)
+      _supported_platform || return 0
+      local KERNEL=${KERNEL/linux/unknown-linux-musl}
+      local KERNEL=${KERNEL/darwin/apple-darwin}
+      local ARCH=${ARCH/386/i686}
+      local ARCH=${ARCH/armv7/arm}
+      local ARCH=${ARCH/amd64/x86_64}
+      local ARCH=${ARCH/arm64/aarch64}
+      local asset_ext=tar.gz
+      local asset_url='${asset}-${asset_rel}-${ARCH}-${KERNEL}.${asset_ext}'
+      local asset_tar='${asset}-${asset_rel}-${ARCH}-${KERNEL}/bat'
+      _latest_release_asset
+      ;;
+    postinstall)
+      bat --completion bash >"${BCD_PATH}"/bat
+      bat --completion zsh >"${ZCD_PATH}"/_bat
+      bat --completion fish >"${FCD_PATH}"/bat.fish
+      ;;
+    remove) _remove_asset ;;
     clean) _clean_asset ;;
     info) _get_asset_info ;;
     *) false ;;
