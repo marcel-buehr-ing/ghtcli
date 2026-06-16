@@ -98,6 +98,7 @@ _ghlr_gitlab=glab
 _ghlr_hashicorp=vault,terraform
 _ghlr_kube=kubectl,kube_ps1,krew,kubie,kubectx,kubens,k9s,ktop,stern,kustomize,helm,helm_ct,pv_migrate
 _ghlr_lazy=lazydocker,lazygit
+_ghlr_markdown=glow
 _ghlr_minio=mc,rclone
 _ghlr_registry=oras,regclient,skopeo
 _ghlr_security=trivy
@@ -638,6 +639,34 @@ _ghlr_glab()
       glab completion -s bash >"${BCD_PATH}"/glab
       glab completion -s zsh >"${ZCD_PATH}"/_glab
       glab completion -s fish >"${FCD_PATH}"/glab.fish
+      ;;
+    remove) _remove_asset ;;
+    clean) _clean_asset ;;
+    info) _get_asset_info ;;
+    *) false ;;
+  esac
+}
+
+# glow
+_ghlr_glow()
+{
+  local repo=glow owner=charmbracelet asset=glow
+  local archs_linux=386,armv7,amd64,arm64 archs_darwin=amd64,arm64
+  case ${1} in
+    install)
+      _supported_platform || return 0
+      local ARCH=${ARCH/386/i386}
+      local ARCH=${ARCH/armv7/arm}
+      local ARCH=${ARCH/amd64/x86_64}
+      local asset_ext=tar.gz
+      local asset_url='${asset}_${asset_rel//[^0-9.]}_${KERNEL^}_${ARCH}.${asset_ext}'
+      local asset_tar='${asset}_${asset_rel//[^0-9.]}_${KERNEL^}_${ARCH}/glow'
+      _latest_release_asset
+      ;;
+    postinstall)
+      glow completion bash >"${BCD_PATH}"/glow
+      glow completion zsh >"${ZCD_PATH}"/_glow
+      glow completion fish >"${FCD_PATH}"/glow.fish
       ;;
     remove) _remove_asset ;;
     clean) _clean_asset ;;
