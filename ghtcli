@@ -89,7 +89,7 @@ PATH="${BIN_PATH}:${PATH}"
 #
 
 # groups
-_ghlr_ai=codex,claude
+_ghlr_ai=codex,claude,ollama
 _ghlr_aquasecurity=trivy
 _ghlr_digitalocean=doctl
 _ghlr_docker=ctop,lazydocker,dry,docuum
