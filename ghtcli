@@ -1244,6 +1244,38 @@ _ghlr_nerdctl()
   esac
 }
 
+# ollama-cli
+_ghlr_ollama()
+{
+  local repo=ollama owner=ollama asset=ollama
+  local archs_linux=amd64,arm64 archs_darwin=arm64
+  case ${1} in
+    install)
+      _supported_platform || return 0
+      local asset_ext=tar.zst
+      local asset_url='ollama-${KERNEL}-${ARCH}.${asset_ext}'
+      local asset_tar=bin/ollama
+      if [[ ${KERNEL} == darwin ]]; then
+        local asset_ext=tgz
+        local asset_url='ollama-${KERNEL}.${asset_ext}'
+        local asset_tar=ollama
+      fi
+      _latest_release_asset
+      ;;
+    postinstall)
+      carapace ollama bash >"${BCD_PATH}"/ollama
+      carapace ollama zsh >"${ZCD_PATH}"/_ollama
+      carapace ollama fish >"${FCD_PATH}"/ollama.fish
+      ;;
+    remove)
+      _remove_asset
+      ;;
+    clean) _clean_asset ;;
+    info) _get_asset_info ;;
+    *) false ;;
+  esac
+}
+
 # openbao
 _ghlr_openbao()
 {
