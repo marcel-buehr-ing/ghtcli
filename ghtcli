@@ -1925,6 +1925,37 @@ _ghlr_yq()
   esac
 }
 
+# zellij
+_ghlr_zellij()
+{
+  local repo=zellij owner=zellij-org asset=zellij
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
+  case ${1} in
+    install)
+      _supported_platform || return 0
+      local ARCH=${ARCH/amd64/x86_64}
+      local ARCH=${ARCH/arm64/aarch64}
+      local KERNEL=${KERNEL/linux/unknown-linux-musl}
+      local KERNEL=${KERNEL/darwin/apple-darwin}
+      local asset_ext=tar.gz
+      local asset_url='${asset}-${ARCH}-${KERNEL}.${asset_ext}'
+      local asset_tar='${asset}'
+      _latest_release_asset
+      ;;
+    postinstall)
+      zellij setup --generate-completion bash >"${BCD_PATH}"/zellij
+      zellij setup --generate-completion zsh >"${ZCD_PATH}"/_zellij
+      zellij setup --generate-completion fish >"${FCD_PATH}"/zellij.fish
+      ;;
+    remove)
+      _remove_asset
+      ;;
+    clean) _clean_asset ;;
+    info) _get_asset_info ;;
+    *) false ;;
+  esac
+}
+
 #
 # Internal functions and vars
 #
