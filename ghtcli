@@ -1266,9 +1266,30 @@ _ghlr_ollama()
       carapace ollama bash >"${BCD_PATH}"/ollama
       carapace ollama zsh >"${ZCD_PATH}"/_ollama
       carapace ollama fish >"${FCD_PATH}"/ollama.fish
+      if [[ ! $(id -u) -eq 0 && ! -e ~/.ollama/id_ed25519 ]]; then
+          mkdir -pm 700 ~/.ollama
+          ssh-keygen -q -t ed25519 -N '' -C '' -f ~/.ollama/id_ed25519
+          ssh-keygen -y -f ~/.ollama/id_ed25519 >~/.ollama/id_ed25519.pub
+          chmod 600 ~/.ollama/id_ed25519
+          chmod 644 ~/.ollama/id_ed25519.pub
+          printf '%s %s\n%s\n' "Register this key under Device Keys" \
+            "${_clr_orange}https://ollama.com/settings/keys${_clr_reset}:" \
+            "${_clr_blue}$(cat ~/.ollama/id_ed25519.pub)${_clr_reset}"
+      fi
+      grep -q 'export OLLAMA_HOST=' "${BRC_FILE}" 2>/dev/null \
+        || printf 'export OLLAMA_HOST="https://ollama.com"\n' >>"${BRC_FILE}"
+      grep -q 'export OLLAMA_HOST=' "${ZRC_FILE}" 2>/dev/null \
+        || printf 'export OLLAMA_HOST="https://ollama.com"\n' >>"${ZRC_FILE}"
+      grep -q 'export OLLAMA_HOST=' "${FRC_PATH}"/ollama.fish 2>/dev/null \
+        || printf 'export OLLAMA_HOST="https://ollama.com"\n' >>"${FRC_PATH}"/ollama.fish
       ;;
     remove)
       _remove_asset
+      sed '/export OLLAMA_HOST="https:\/\/ollama.com"/d' "${BRC_FILE}"
+      sed '/export OLLAMA_HOST="https:\/\/ollama.com"/d' "${ZRC_FILE}"
+      sed '/export OLLAMA_HOST="https:\/\/ollama.com"/d' "${FRC_PATH}"/ollama.fish
+      test -s "${FRC_PATH}"/ollama.fish \
+        || rm -vf "${FRC_PATH}"/ollama.fish
       ;;
     clean) _clean_asset ;;
     info) _get_asset_info ;;
