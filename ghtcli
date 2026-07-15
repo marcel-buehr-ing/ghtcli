@@ -1307,7 +1307,7 @@ _ghlr_openbao()
       _supported_platform || return 0
       local ARCH=${ARCH/amd64/x86_64}
       local asset_ext=tar.gz
-      local asset_url='${asset}_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
+      local asset_url='openbao_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
       local asset_tar=bao
       _installed del openbao_hsm
       _latest_release_asset
@@ -1335,7 +1335,7 @@ _ghlr_openbao_hsm()
       _supported_platform || return 0
       local ARCH=${ARCH/amd64/x86_64}
       local asset_ext=tar.gz
-      local asset_url='${asset}-hsm_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
+      local asset_url='openbao-hsm_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
       local asset_out='${asset}-hsm-${asset_rel}-${KERNEL}-${ARCH}'
       local asset_tar=bao
       _installed del openbao
