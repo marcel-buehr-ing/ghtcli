@@ -55,6 +55,17 @@ else
   alias sed='sed -i'
 fi
 
+# curl defaults
+curl()
+{
+  command curl \
+    --retry 5 \
+    --connect-timeout 15 \
+    --retry-all-errors \
+    --remove-on-error \
+    -fsSL "${@}"
+}
+
 # Target files and folders
 if [[ $(id -u) -eq 0 ]]; then
   # all users of the system
@@ -312,7 +323,7 @@ _ghlr_claude()
     install)
       _supported_platform || return 0
       local ARCH=${ARCH/amd64/x64}
-      local asset_rel="$(curl -fsSL https://downloads.claude.ai/claude-code-releases/latest)"
+      local asset_rel="$(curl https://downloads.claude.ai/claude-code-releases/latest)"
       local asset_dwl='https://downloads.claude.ai/claude-code-releases/${asset_rel}/${KERNEL}-${ARCH}/${asset}'
       _latest_release_asset
       ;;
@@ -661,7 +672,7 @@ _ghlr_glab()
     install)
       _supported_platform || return 0
       local asset_ext=tar.gz
-      local asset_rel="$(curl ${AUTH_HEADER:+-H "${AUTH_HEADER}"} -fsSL https://api.github.com/repos/gl-cli/glab/tags |jq -r '.[0].name')"
+      local asset_rel="$(curl ${AUTH_HEADER:+-H "${AUTH_HEADER}"} https://api.github.com/repos/gl-cli/glab/tags |jq -r '.[0].name')"
       local asset_dwl='https://gitlab.com/gitlab-org/cli/-/releases/${asset_rel}/downloads/${asset}_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
       local asset_tar=bin/glab
       _latest_release_asset
@@ -924,7 +935,7 @@ _ghlr_kubectl()
     install)
       _supported_platform || return 0
       local ARCH=${ARCH/armv*/arm}
-      local asset_rel="$(curl -fsSL https://dl.k8s.io/release/stable.txt)"
+      local asset_rel="$(curl https://dl.k8s.io/release/stable.txt)"
       local asset_dwl='https://dl.k8s.io/release/${asset_rel}/bin/${KERNEL}/${ARCH}/${asset}'
       _latest_release_asset
       ;;
@@ -1978,7 +1989,7 @@ _latest_release_asset()
   # asset_ext    : asset file extension           # default : ''
   # asset_url    : asset name used in url         # default : ${asset}-${KERNEL}-${ARCH}${asset_ext:+.${asset_ext#.}}
   # asset_out    : asset name used as output      # default : ${asset}-${asset_rel}-${KERNEL}-${ARCH}
-  # asset_rel    : asset release name             # default : $(curl -H "${AUTH_HEADER}" -fsSL "https://api.github.com/repos/${owner}/${repo}/releases/latest" |jq -r '.tag_name')
+  # asset_rel    : asset release name             # default : $(curl -H "${AUTH_HEADER}" "https://api.github.com/repos/${owner}/${repo}/releases/latest" |jq -r '.tag_name')
   # asset_dwl    : asset download url             # default : https://github.com/${owner}/${repo}/releases/download/${asset_rel}/${asset_url}
   # asset_cpf    : asset cache prune filter       # default : ${asset_out%%-*}-*
   # asset_dah    : asset download auth header     # default : ''
@@ -1988,13 +1999,13 @@ _latest_release_asset()
     if command -v jq &>/dev/null; then
       local asset_rel=$( \
         curl ${AUTH_HEADER:+-H "${AUTH_HEADER}"} \
-          -fsSL "https://api.github.com/repos/${owner}/${repo}/releases/latest" \
+          "https://api.github.com/repos/${owner}/${repo}/releases/latest" \
           |jq -r '.tag_name'
       )
     else
       local asset_rel=$( \
         curl ${AUTH_HEADER:+-H "${AUTH_HEADER}"} \
-          -fsSL "https://api.github.com/repos/${owner}/${repo}/releases/latest" \
+          "https://api.github.com/repos/${owner}/${repo}/releases/latest" \
           |awk -F\" '/"tag_name":/{print$(NF-1)}'
       )
     fi
@@ -2016,16 +2027,16 @@ _latest_release_asset()
   eval "asset_out=\"${asset_out:-${asset}-${asset_rel}-${KERNEL}-${ARCH}}\""
   eval "asset_dwl=\"${asset_dwl:-https://github.com/${owner}/${repo}/releases/download/${asset_rel}/${asset_url}}\""
   eval "asset_cpf=\"${asset_cpf:-${asset_cpf:-${asset}-*}}\""
-  if curl --help http |grep -- '--etag-' &>/dev/null; then
+  if command curl --help http |grep -- '--etag-' &>/dev/null; then
     curl ${AUTH_HEADER:+-H "${AUTH_HEADER}"} \
-         -fsSLR "${asset_dwl}" \
+         --remote-time "${asset_dwl}" \
          --etag-save "${asset_out}${asset_ext:+.${asset_ext#.}}".etag \
          --etag-compare "${asset_out}${asset_ext:+.${asset_ext#.}}".etag \
          --time-cond "${asset_out}${asset_ext:+.${asset_ext#.}}" \
          --output "${asset_out}${asset_ext:+.${asset_ext#.}}"
   else
     curl ${AUTH_HEADER:+-H "${AUTH_HEADER}"} \
-         -fsSLR "${asset_dwl}" \
+         --remote-time "${asset_dwl}" \
          --time-cond "${asset_out}${asset_ext:+.${asset_ext#.}}" \
          --output "${asset_out}${asset_ext:+.${asset_ext#.}}"
   fi
@@ -2057,8 +2068,8 @@ _latest_release_raw_asset()
   # asset        : asset name (mandatory)
   # asset_url    : asset name used in url     # default : ${asset}-${KERNEL}-${ARCH}
   # asset_out    : asset name used as output  # default : ${asset}-${asset_rel}-${KERNEL}-${ARCH}-${asset_sha}
-  # asset_rel    : asset release name         # default : $(curl -H "${AUTH_HEADER}" -fsSL "https://api.github.com/repos/${owner}/${repo}/releases/latest" |jq -r '.tag_name')
-  # asset_sha    : asset commit hash          # default : $(curl -H "${AUTH_HEADER}" -fsSL "https://api.github.com/repos/${owner}/${repo}/git/ref/tags/${asset_rel}" |jq -r '.object.sha[:7]')
+  # asset_rel    : asset release name         # default : $(curl -H "${AUTH_HEADER}" "https://api.github.com/repos/${owner}/${repo}/releases/latest" |jq -r '.tag_name')
+  # asset_sha    : asset commit hash          # default : $(curl -H "${AUTH_HEADER}" "https://api.github.com/repos/${owner}/${repo}/git/ref/tags/${asset_rel}" |jq -r '.object.sha[:7]')
   # asset_dwl    : asset download url         # default : https://github.com/${owner}/${repo}/releases/download/${asset_rel}/${asset_url}
   # asset_cpf    : asset cache prune filter   # default : ${asset_out%%-*}-*
   # asset_dah    : asset download auth header # default : ''
@@ -2067,19 +2078,19 @@ _latest_release_raw_asset()
   if [[ -z "${asset_rel-}" ]]; then
     local asset_rel=$( \
       curl ${AUTH_HEADER:+-H "${AUTH_HEADER}"} \
-        -fsSL "https://api.github.com/repos/${owner}/${repo}/releases/latest" \
+        "https://api.github.com/repos/${owner}/${repo}/releases/latest" \
         |jq -r '.tag_name'
     )
   fi
   if [[ -z "${asset_sha-}" ]]; then
     local asset_ref=$( \
       curl ${AUTH_HEADER:+-H "${AUTH_HEADER}"} \
-        -fsSL "https://api.github.com/repos/${owner}/${repo}/git/ref/tags/${asset_rel}" \
+        "https://api.github.com/repos/${owner}/${repo}/git/ref/tags/${asset_rel}" \
         |jq -r '.object.sha'
     )
     local asset_sha=$( \
       curl ${AUTH_HEADER:+-H "${AUTH_HEADER}"} \
-        -fsSL "https://api.github.com/repos/${owner}/${repo}/git/tags/${asset_ref}" 2>/dev/null \
+        "https://api.github.com/repos/${owner}/${repo}/git/tags/${asset_ref}" 2>/dev/null \
         |jq -r '.object.sha[:7]' || printf "${asset_ref::7}"
     )
   fi
@@ -2098,16 +2109,16 @@ _latest_release_raw_asset()
   eval "asset_out=\"${asset_out:-${asset}-${asset_rel}-${KERNEL}-${ARCH}-${asset_sha}}\""
   eval "asset_dwl=\"${asset_dwl:-https://raw.githubusercontent.com/${owner}/${repo}/${asset_sha}/${asset_url}}\""
   eval "asset_cpf=\"${asset_cpf:-${asset_cpf:-${asset}-*}}\""
-  if curl --help http |grep -- '--etag-' &>/dev/null; then
+  if command curl --help http |grep -- '--etag-' &>/dev/null; then
     curl ${AUTH_HEADER:+-H "${AUTH_HEADER}"} \
-         -fsSLR "${asset_dwl}" \
+         --remote-time "${asset_dwl}" \
          --etag-save "${asset_out}".etag \
          --etag-compare "${asset_out}".etag \
          --time-cond "${asset_out}" \
          --output "${asset_out}"
   else
     curl ${AUTH_HEADER:+-H "${AUTH_HEADER}"} \
-         -fsSLR "${asset_dwl}" \
+         --remote-time "${asset_dwl}" \
          --time-cond "${asset_out}" \
          --output "${asset_out}"
   fi
@@ -2125,7 +2136,7 @@ _latest_commit_raw_asset()
   # asset_branch : asset branch               # default : main
   # asset_url    : asset name used in url     # default : ${asset}-${KERNEL}-${ARCH}
   # asset_out    : asset name used as output  # default : ${asset}-(${asset_sha}-${KERNEL}-${ARCH}
-  # asset_sha    : asset commit hash          # default : $(curl -H "${AUTH_HEADER}" -fsSL "https://api.github.com/repos/${owner}/${repo}/commits/heads/${asset_branch:-main}" |jq -r '.sha[:7]')
+  # asset_sha    : asset commit hash          # default : $(curl -H "${AUTH_HEADER}" "https://api.github.com/repos/${owner}/${repo}/commits/heads/${asset_branch:-main}" |jq -r '.sha[:7]')
   # asset_dwl    : asset download url         # default : https://github.com/${owner}/${repo}/releases/download/${asset_rel}/${asset_url}
   # asset_cpf    : asset cache prune filter   # default : ${asset_out%%-*}-*
   # asset_dah    : asset download auth header # default : ''
@@ -2135,7 +2146,7 @@ _latest_commit_raw_asset()
   if [[ -z "${asset_sha-}" ]]; then
     local asset_sha=$( \
       curl ${AUTH_HEADER:+-H "${AUTH_HEADER}"} \
-        -fsSL "https://api.github.com/repos/${owner}/${repo}/commits/heads/${asset_branch:-main}" \
+        "https://api.github.com/repos/${owner}/${repo}/commits/heads/${asset_branch:-main}" \
         |jq -r '.sha[:7]'
     )
   fi
@@ -2154,16 +2165,16 @@ _latest_commit_raw_asset()
   eval "asset_out=\"${asset_out:-${asset}-${asset_sha}-${KERNEL}-${ARCH}}\""
   eval "asset_dwl=\"${asset_dwl:-https://raw.githubusercontent.com/${owner}/${repo}/${asset_sha}/${asset_url}}\""
   eval "asset_cpf=\"${asset_cpf:-${asset_cpf:-${asset}-*}}\""
-  if curl --help http |grep -- '--etag-' &>/dev/null; then
+  if command curl --help http |grep -- '--etag-' &>/dev/null; then
     curl ${AUTH_HEADER:+-H "${AUTH_HEADER}"} \
-         -fsSLR "${asset_dwl}" \
+         --remote-time "${asset_dwl}" \
          --etag-save "${asset_out}".etag \
          --etag-compare "${asset_out}".etag \
          --time-cond "${asset_out}" \
          --output "${asset_out}"
   else
     curl ${AUTH_HEADER:+-H "${AUTH_HEADER}"} \
-         -fsSLR "${asset_dwl}" \
+         --remote-time "${asset_dwl}" \
          --time-cond "${asset_out}" \
          --output "${asset_out}"
   fi
@@ -2253,7 +2264,7 @@ _dependencies()
       _ghlr_${i} install
     elif [[ ${i} == curl ]]; then
       # current static curl with etag support
-      if ! curl --help http |grep -- '--etag-' &>/dev/null; then
+      if ! command curl --help http |grep -- '--etag-' &>/dev/null; then
         _ghlr_${i} install
       fi
     fi
@@ -2301,7 +2312,7 @@ _resolve()
 _get_asset_info()
 {
   local d="$(curl ${AUTH_HEADER:+-H "${AUTH_HEADER}"} \
-    -fsSL "https://api.github.com/repos/${owner}/${repo}" \
+    "https://api.github.com/repos/${owner}/${repo}" \
     |jq -r "[.description, .html_url, .homepage]
             | map(select(. != null and . != \"\"))
             | join(\"\n${_clr_reset}  => \")"
