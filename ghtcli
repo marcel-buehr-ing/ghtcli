@@ -1906,7 +1906,10 @@ _ghlr_vykar()
       _latest_release_asset
       ;;
     postinstall) true ;;
-    remove) _remove_asset ;;
+    remove)
+      _remove_asset
+      rm -vf "${BIN_PATH}"/vykar-server
+      ;;
     clean) _clean_asset ;;
     info) _get_asset_info ;;
     *) false ;;
