@@ -2408,7 +2408,7 @@ _noninteractive()
 # Autoupdates
 _autoupdate()
 {
-  local script="${BIN_PATH@Q}/ghtcli"
+  local script="${BIN_PATH@Q}/ghtcli" user="${USER:-$(id -un)}"
   case ${1-} in
     ena*) # create cronjob
       _autoupdate marker
@@ -2429,19 +2429,19 @@ _autoupdate()
           printf '%s\n' "${job}") |crontab -
         printf '%s %s %s\n' \
           "${_clr_orange}Autoupdate${_clr_reset}" \
-          "${_clr_blue}${USER}${_clr_reset}" \
+          "${_clr_blue}${user}${_clr_reset}" \
           'cronjob added:'
       else
         printf '%s %s %s\n' \
           "${_clr_orange}Autoupdate${_clr_reset}" \
-          "${_clr_blue}${USER}${_clr_reset}" \
+          "${_clr_blue}${user}${_clr_reset}" \
           'cronjob(s) already present:'
       fi
       (crontab -l 2>/dev/null |grep -F GHTCLI_GITHUB_TOKEN= ||:) \
         |xargs -rI%% printf ' %s\n' "${_clr_blue}%%${_clr_reset}"
       (crontab -l 2>/dev/null |grep -F ${script} ||:) \
         |xargs -rI%% printf ' %s\n' "${_clr_blue}%%${_clr_reset}"
-      printf '%s\n' "💡 Edit the timing manually with: ${_clr_blue}crontab -eu ${_clr_orange}${USER}${_clr_reset}"
+      printf '%s\n' "💡 Edit the timing manually with: ${_clr_blue}crontab -eu ${_clr_orange}${user}${_clr_reset}"
       ;;
     dis*) # remove cronjobs
       local token="$(crontab -l 2>/dev/null |grep -F GHTCLI_GITHUB_TOKEN= ||:)"
@@ -2451,12 +2451,12 @@ _autoupdate()
         (crontab -l 2>/dev/null |grep -vF ${script} ||:) |crontab -
         printf '%s %s %s\n' \
           "${_clr_orange}Autoupdate${_clr_reset}" \
-          "${_clr_blue}${USER}${_clr_reset}" \
+          "${_clr_blue}${user}${_clr_reset}" \
           'cronjob(s) removed:'
       else
         printf '%s %s %s\n' \
           "${_clr_orange}Autoupdate${_clr_reset}" \
-          "${_clr_blue}${USER}${_clr_reset}" \
+          "${_clr_blue}${user}${_clr_reset}" \
           'no cronjob(s) found.'
       fi
       printf '%s' "${token}" \
