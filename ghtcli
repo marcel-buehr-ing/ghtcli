@@ -103,7 +103,7 @@ PATH="${BIN_PATH}:${PATH}"
 #
 
 # groups
-_ghlr_ai=codex,claude,ollama
+_ghlr_ai=codex,claude,opencode,ollama
 _ghlr_aquasecurity=trivy
 _ghlr_digitalocean=doctl
 _ghlr_docker=ctop,lazydocker,dry,docuum
@@ -1305,6 +1305,35 @@ _ghlr_ollama()
       test -s "${FRC_PATH}"/ollama.fish \
         || rm -vf "${FRC_PATH}"/ollama.fish
       ;;
+    clean) _clean_asset ;;
+    info) _get_asset_info ;;
+    *) false ;;
+  esac
+}
+
+# opencode
+_ghlr_opencode()
+{
+  local repo=opencode owner=anomalyco asset=opencode
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
+  case ${1} in
+    install)
+      _supported_platform || return 0
+      local ARCH=${ARCH/amd64/x64}
+      if [[ ${KERNEL} == linux ]]; then
+        local ARCH=${ARCH}-musl
+        local asset_ext=tar.gz
+        local asset_tar=opencode
+      elif [[ ${KERNEL} == darwin ]]; then
+        local asset_ext=zip
+        local asset_zip=opencode
+      fi
+      _latest_release_asset
+      ;;
+    postinstall)
+      opencode completion >"${BCD_PATH}"/opencode
+      ;;
+    remove) _remove_asset ;;
     clean) _clean_asset ;;
     info) _get_asset_info ;;
     *) false ;;
