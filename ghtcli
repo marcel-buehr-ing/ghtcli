@@ -1321,7 +1321,6 @@ _ghlr_opencode()
       _supported_platform || return 0
       local ARCH=${ARCH/amd64/x64}
       if [[ ${KERNEL} == linux ]]; then
-        local ARCH=${ARCH}-musl
         local asset_ext=tar.gz
         local asset_tar=opencode
       elif [[ ${KERNEL} == darwin ]]; then
