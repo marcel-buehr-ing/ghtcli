@@ -382,8 +382,11 @@ _ghlr_codex()
       local ARCH=${ARCH/amd64/x86_64}
       local ARCH=${ARCH/arm64/aarch64}
       local asset_ext=tar.gz
-      local asset_url='${asset}-${ARCH}-${KERNEL}.${asset_ext}'
-      local asset_tar='${asset}-${ARCH}-${KERNEL}'
+      local asset_url='codex-package-${ARCH}-${KERNEL}.${asset_ext}'
+      local asset_tar=bin/codex
+      _latest_release_asset
+      local asset=codex-code-mode-host
+      local asset_tar=bin/codex-code-mode-host
       _latest_release_asset
       ;;
     postinstall)
@@ -391,7 +394,10 @@ _ghlr_codex()
       codex completion zsh >"${ZCD_PATH}"/_codex
       codex completion fish >"${FCD_PATH}"/codex.fish
       ;;
-    remove) _remove_asset ;;
+    remove)
+      _remove_asset
+      rm -vf "${BIN_PATH}"/codex-code-mode-host
+      ;;
     clean) _clean_asset ;;
     info) _get_asset_info ;;
     *) false ;;
