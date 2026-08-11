@@ -383,6 +383,7 @@ _ghlr_codex()
       local ARCH=${ARCH/arm64/aarch64}
       local asset_ext=tar.gz
       local asset_url='codex-package-${ARCH}-${KERNEL}.${asset_ext}'
+      local asset_out='codex-package-${asset_rel}-${ARCH}-${KERNEL}'
       local asset_tar=bin/codex
       _latest_release_asset
       local asset=codex-code-mode-host
