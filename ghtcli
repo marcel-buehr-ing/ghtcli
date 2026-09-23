@@ -1168,13 +1168,11 @@ _ghlr_lazygit()
 _ghlr_mc()
 {
   local repo=mc owner=minio asset=mc
-  local archs_linux=armv7,amd64,arm64 archs_darwin=amd64,arm64
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
   case ${1} in
     install)
       _supported_platform || return 0
-      local ARCH=${ARCH/armv7/arm}
-      local asset_url="${KERNEL}-${ARCH}/mc"
-      local asset_dwl='https://dl.min.io/client/mc/release/${asset_url}'
+      local asset_url='${asset}.${KERNEL}-${ARCH}.${asset_rel}'
       _latest_release_asset
       ;;
     postinstall)
