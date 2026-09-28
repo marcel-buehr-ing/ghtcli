@@ -1395,32 +1395,10 @@ _ghlr_openbao()
   esac
 }
 
-# openbao-hsm
+# Compatibility alias: openbao_hsm -> openbao
 _ghlr_openbao_hsm()
 {
-  local repo=openbao owner=openbao asset=bao
-  local archs_linux=amd64,arm64
-  case ${1} in
-    install)
-      _supported_platform || return 0
-      local asset_ext=tar.gz
-      local asset_url='openbao-hsm_${asset_rel//[^0-9.]}_${KERNEL}_${ARCH}.${asset_ext}'
-      local asset_out='${asset}-hsm-${asset_rel}-${KERNEL}-${ARCH}'
-      local asset_tar=bao
-      _installed del openbao
-      _latest_release_asset
-      ;;
-    postinstall)
-      bao -autocomplete-install 2>/dev/null ||:
-      ;;
-    remove)
-      bao -autocomplete-uninstall 2>/dev/null ||:
-      _remove_asset
-      ;;
-    clean) _clean_asset ;;
-    info) _get_asset_info ;;
-    *) false ;;
-  esac
+  _ghlr_openbao "${@}"
 }
 
 # opentofu
