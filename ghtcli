@@ -815,6 +815,30 @@ _ghlr_helm_ct()
   esac
 }
 
+# herdr
+_ghlr_herdr()
+{
+  local repo=herdr owner=herdrdev asset=herdr
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
+  case ${1} in
+    install)
+      _supported_platform || return 0
+      local ARCH=${ARCH/amd64/x86_64}
+      local ARCH=${ARCH/arm64/aarch64}
+      _latest_release_asset
+      ;;
+    postinstall)
+      herdr completion bash >"${BCD_PATH}"/herd
+      herdr completion zsh >"${ZCD_PATH}"/_herdr
+      herdr completion fish >"${FCD_PATH}"/herdr.fish
+      ;;
+    remove) _remove_asset ;;
+    clean) _clean_asset ;;
+    info) _get_asset_info ;;
+    *) false ;;
+  esac
+}
+
 # jq
 _ghlr_jq()
 {
