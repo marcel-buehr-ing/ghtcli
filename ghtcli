@@ -1235,6 +1235,7 @@ _ghlr_mcli()
     postinstall)
       if [[ -e "${HOME}"/.mc && ! -e "${HOME}"/.mcli ]]; then
         mv -v "${HOME}"/.mc "${HOME}"/.mcli
+        mcli alias rm play 2>/dev/null
       fi
       SHELL=bash mcli --autocompletion >/dev/null
       SHELL=zsh mcli --autocompletion >/dev/null
