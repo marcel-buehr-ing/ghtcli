@@ -113,7 +113,7 @@ _ghlr_hashicorp=vault,terraform
 _ghlr_kube=kubectl,kube_ps1,krew,kubie,kubectx,kubens,k9s,ktop,stern,kustomize,helm,helm_ct,pv_migrate
 _ghlr_lazy=lazydocker,lazygit
 _ghlr_markdown=bat,glow
-_ghlr_minio=mc,rclone
+_ghlr_s3=mcli,rclone
 _ghlr_registry=oras,regclient,skopeo
 _ghlr_security=trivy
 _ghlr_image=dockle,dive,hadolint,mintoolkit
@@ -1189,6 +1189,7 @@ _ghlr_lazygit()
 }
 
 # minio mc
+# => has been discontinued.. please use silo mcli..
 _ghlr_mc()
 {
   local repo=mc owner=minio asset=mc
@@ -1197,15 +1198,53 @@ _ghlr_mc()
     install)
       _supported_platform || return 0
       local asset_url='${asset}.${KERNEL}-${ARCH}.${asset_rel}'
-      _latest_release_asset
+      #_latest_release_asset
+      _ghlr_mcli install
       ;;
     postinstall)
-      #SHELL=bash mc --autocompletion >/dev/null
-      printf '%s\n' "complete -C ${BIN_PATH@Q}/mc mc" >"${BCD_PATH}"/mc
+      SHELL=bash mc --autocompletion >/dev/null
       SHELL=zsh mc --autocompletion >/dev/null
       SHELL=fish mc --autocompletion >/dev/null
       ;;
-    remove) _remove_asset ;;
+    remove)
+      _remove_asset
+      sed "\|complete -C ${BIN_PATH}/${asset} ${asset}|d" "${BRC_FILE}"
+      sed "\|complete -o nospace -C ${BIN_PATH}/${asset} ${asset}|d" "${ZRC_FILE}"
+      ;;
+    clean) _clean_asset ;;
+    info) _get_asset_info ;;
+    *) false ;;
+  esac
+}
+
+# silo mcli
+_ghlr_mcli()
+{
+  local repo=mc owner=pgsty asset=mcli
+  local archs_linux=amd64,arm64 archs_darwin=amd64,arm64
+  case ${1} in
+    install)
+      _supported_platform || return 0
+      local asset_url='${asset}_${asset_rel//[^0-9]}.0.0_${KERNEL}_${ARCH}${asset_ext:+.${asset_ext#.}}'
+      local asset_out='${asset}-${asset_rel//[^0-9]}.0.0-${KERNEL}-${ARCH}'
+      local asset_ext=tar.gz
+      local asset_tar=mcli
+      _latest_release_asset
+      _ghlr_mc remove
+      ;;
+    postinstall)
+      if [[ -e "${HOME}"/.mc && ! -e "${HOME}"/.mcli ]]; then
+        mv -vT "${HOME}"/.mc "${HOME}"/.mcli
+      fi
+      SHELL=bash mcli --autocompletion >/dev/null
+      SHELL=zsh mcli --autocompletion >/dev/null
+      SHELL=fish mcli --autocompletion >/dev/null
+      ;;
+    remove)
+      _remove_asset
+      sed "\|complete -C ${BIN_PATH}/${asset} ${asset}|d" "${BRC_FILE}"
+      sed "\|complete -o nospace -C ${BIN_PATH}/${asset} ${asset}|d" "${ZRC_FILE}"
+      ;;
     clean) _clean_asset ;;
     info) _get_asset_info ;;
     *) false ;;
