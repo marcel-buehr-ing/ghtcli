@@ -1234,7 +1234,7 @@ _ghlr_mcli()
       ;;
     postinstall)
       if [[ -e "${HOME}"/.mc && ! -e "${HOME}"/.mcli ]]; then
-        mv -vT "${HOME}"/.mc "${HOME}"/.mcli
+        mv -v "${HOME}"/.mc "${HOME}"/.mcli
       fi
       SHELL=bash mcli --autocompletion >/dev/null
       SHELL=zsh mcli --autocompletion >/dev/null
